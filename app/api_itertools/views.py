@@ -46,6 +46,6 @@ def izip_longest():
 def combinations():
 	data = request.get_json()
 
-	combinations = list(it.combinations(*data, r=2))
+	combinations = list(it.combinations(data, r=2))
 
 	return json.dumps(combinations)
