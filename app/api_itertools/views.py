@@ -33,3 +33,19 @@ def izip():
 	izip = list(it.izip(*data))
 
 	return json.dumps(izip)
+
+@itertools.route('/izip-longest', methods=['POST'])
+def izip_longest():
+	data = request.get_json()
+
+	izip_longest = list(it.izip_longest(*data, fillvalue='-'))
+
+	return json.dumps(izip_longest)
+
+@itertools.route('/combinations', methods=['POST'])
+def combinations():
+	data = request.get_json()
+
+	combinations = list(it.combinations(*data, r=2))
+
+	return json.dumps(combinations)
