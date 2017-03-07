@@ -1,14 +1,44 @@
-from flask import Blueprint, request
+from flask import Blueprint, Response, request, url_for
+from werkzeug.exceptions import HTTPException
 import itertools as it
 import json
 
+CONTENT_TYPE = 'application/json'
+
 itertools = Blueprint('itertools', __name__, url_prefix='/itertools')
+
+@itertools.errorhandler(HTTPException)
+def handle_error(error):
+	response = jsonify({'message': error.description['message']})
+
+	return {'message': 'custom error message to appear in body'}, 404, CONTENT_TYPE
 
 @itertools.route('/')
 @itertools.route('/index')
 def index():
-
-    return "testing"
+	links = [
+				{
+					"name": "Product",
+					"link": url_for("itertools.cartesian_product")
+				},
+				{
+					"name": "Chain",
+					"link": url_for("itertools.chain")
+				},
+				{
+					"name": "izip",
+					"link": url_for("itertools.izip")
+				},
+				{
+					"name": "izip-longest",
+					"link": url_for("itertools.izip_longest")
+				},
+				{
+					"name": "Combinations",
+					"link": url_for("itertools.combinations")
+				}
+			] 
+	return Response(json.dumps(links), 200, content_type=CONTENT_TYPE) 
 
 @itertools.route('/product', methods=['POST'])
 def cartesian_product():
@@ -46,6 +76,6 @@ def izip_longest():
 def combinations():
 	data = request.get_json()
 
-	combinations = list(it.combinations(*data, r=2))
+	combinations = list(it.combinations(data, r=2))
 
 	return json.dumps(combinations)
