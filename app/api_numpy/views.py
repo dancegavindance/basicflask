@@ -5,6 +5,7 @@ import numpy as np
 
 CONTENT_TYPE = 'application/json'
 
+
 numpy = Blueprint('numpy', __name__, url_prefix = '/numpy')
 
 
@@ -28,6 +29,7 @@ def index():
 						{"name": "eye",
 						"link": url_for("numpy.eye_call")}]
 	return Response(json.dumps(output), status = 200, content_type = CONTENT_TYPE)
+
 
 @numpy.route('/arange', methods=['POST'])
 def arange_call():
