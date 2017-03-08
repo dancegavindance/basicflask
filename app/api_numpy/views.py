@@ -1,13 +1,35 @@
-from flask import Blueprint, request
+from flask import Blueprint, Response, request, url_for
+from werkzeug.exceptions import HTTPException
 import json
 import numpy as np
 
+CONTENT_TYPE = 'application/json'
+
+
 numpy = Blueprint('numpy', __name__, url_prefix = '/numpy')
+
+
+@numpy.errorhandler(HTTPException)
+def handle_error(error):
+
+	err_desc = {"error_description": error.description}
+	return json.dumps(err_desc), error.status_code, CONTENT_TYPE
 
 @numpy.route('/')
 @numpy.route('/index')
 def index():
-    return "numpy"
+	output = [{"name": "A range",
+				"link": url_for("numpy.arange_call")},
+						{"name": "from string",
+						"link": url_for("numpy.fromstring_call")},
+						{"name": "zeros",
+						"link": url_for("numpy.zeros_call")},
+						{"name": "ones",
+						"link": url_for("numpy.ones_call")},
+						{"name": "eye",
+						"link": url_for("numpy.eye_call")}]
+	return Response(json.dumps(output), status = 200, content_type = CONTENT_TYPE)
+
 
 @numpy.route('/arange', methods=['POST'])
 def arange_call():
